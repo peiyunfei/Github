@@ -1,4 +1,4 @@
-package com.firstapp;
+package com.github;
 
 import android.app.Application;
 

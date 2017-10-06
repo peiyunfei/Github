@@ -23,7 +23,7 @@ const StatusBarShape = {
     // 状态栏文本的颜色
     barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
     // 是否隐藏状态栏
-    hidden: PropTypes.bool,
+    hidden: PropTypes.boolean,
 }
 
 /**
@@ -44,7 +44,7 @@ export default class NavigationBar extends Component {
         // 右边按钮
         rightButton: PropTypes.element,
         // 是否隐藏导航栏
-        hide: PropTypes.bool,
+        hide: PropTypes.boolean,
         // 状态栏
         statusBar: PropTypes.shape(StatusBarShape)
     }
