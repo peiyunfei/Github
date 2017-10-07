@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Image,
-    View
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
 import PopularPage from './popular/PopularPages'
@@ -19,6 +18,7 @@ export default class Main extends Component {
         super(props);
         this.state = {
             selectedTab: 'popular',
+            theme:this.props.theme,
         }
     }
 
@@ -44,7 +44,7 @@ export default class Main extends Component {
         );
     }
 
-    renderTabBarItem(title, image, selectedTab, component) {
+    renderTabBarItem(title, image, selectedTab, Component) {
         return (
             <TabNavigator.Item
                 title={title}
@@ -55,12 +55,11 @@ export default class Main extends Component {
                         source={image}/>}
                 renderSelectedIcon={() =>
                     <Image
-                        style={[styles.iconStyle, {tintColor: 'red'}]}
+                        style={[styles.iconStyle, {tintColor: '#2196f3'}]}
                         source={image}/>}
                 selected={this.state.selectedTab === selectedTab}
                 onPress={() => this.setState({selectedTab: selectedTab})}>
-                {/*<View style={{flex: 1, backgroundColor: 'green'}}></View>*/}
-                <View>{component}</View>
+                <Component {...this.props} theme={this.state.theme}/>
             </TabNavigator.Item>
         );
     }
@@ -77,6 +76,6 @@ const styles = StyleSheet.create({
         height: 25,
     },
     selectedTitle: {
-        color: 'red',
+        color: '#2196f3',
     }
 });

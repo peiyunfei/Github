@@ -11,6 +11,7 @@
     "react-native": "0.48.3",
     "react-native-deprecated-custom-components": "^0.1.1",
     "react-native-easy-toast": "^1.0.6",
+    "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-tab-navigator": "^0.3.4"
   },
   "devDependencies": {
