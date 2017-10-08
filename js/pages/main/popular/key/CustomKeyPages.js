@@ -9,15 +9,15 @@ import {
     View,
 } from 'react-native';
 import CheckBox from 'react-native-check-box'
-import NavigationBar from "../../../view/NavigationBar";
-import ViewUtil from '../../../utils/ViewUtil'
-import ArrayUtil from '../../../utils/ArrayUtil'
-import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
+import NavigationBar from "../../../../view/NavigationBar";
+import ViewUtil from '../../../../utils/ViewUtil'
+import ArrayUtil from '../../../../utils/ArrayUtil'
+import LanguageDao, {FLAG_LANGUAGE} from '../../../../expand/dao/LanguageDao'
 
 /**
  * 自定义标签界面
  */
-export default class CustomKeyPages extends Component {
+export default class CustomKeyPage extends Component {
 
     constructor(props) {
         super(props);
@@ -98,12 +98,12 @@ export default class CustomKeyPages extends Component {
                 checkedImage={
                     <Image
                         style={styles.checkBox}
-                        source={require('./img/ic_check_box.png')}/>
+                        source={require('../../../../../res/images/ic_check_box.png')}/>
                 }
                 unCheckedImage={
                     <Image
                         style={styles.checkBox}
-                        source={require('./img/ic_check_box_outline_blank.png')}/>
+                        source={require('../../../../../res/images/ic_check_box_outline_blank.png')}/>
                 }
                 isChecked={data.checked}
                 isIndeterminate={false}/>

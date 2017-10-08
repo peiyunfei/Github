@@ -4,10 +4,10 @@ import {
     Image,
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
-import PopularPage from './popular/PopularPages'
-import MinePage from './mine/MinePages'
-import FavoritePage from './favorite/FavoritePages'
-import TrendPage from './trend/TrendPages'
+import PopularPage from './popular/PopularPage'
+import MinePage from './mine/MinePage'
+import FavoritePage from './favorite/FavoritePage'
+import TrendPage from './trend/TrendPage'
 
 /**
  * 主界面

@@ -17,7 +17,7 @@ const QUERY_STR = '&sort=stars';
 /**
  * 最热界面
  */
-export default class PopularPages extends Component {
+export default class PopularPage extends Component {
 
     constructor(props) {
         super(props);

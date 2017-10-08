@@ -8,7 +8,7 @@ import {
 /**
  * 收藏界面
  */
-export default class FavoritePages extends Component {
+export default class FavoritePage extends Component {
 
     render() {
         return (

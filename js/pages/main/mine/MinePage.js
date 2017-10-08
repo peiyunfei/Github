@@ -5,12 +5,13 @@ import {
     View,
 } from 'react-native';
 import NavigationBar from "../../../view/NavigationBar"
-import CustomKeyPages from './CustomKeyPages'
+import CustomKeyPages from '../popular/key/CustomKeyPages'
+import SortKeyPage from '../popular/key/SortKeyPage'
 
 /**
  * 我的界面
  */
-export default class PopularPages extends Component {
+export default class MinePage extends Component {
 
     render() {
         return (
@@ -26,6 +27,16 @@ export default class PopularPages extends Component {
                         })
                     }}
                 >自定义标签</Text>
+                <Text
+                    style={{fontSize: 18}}
+                    onPress={() => {
+                        this.props.navigator.push({
+                            component: SortKeyPage,
+                            // 将页面的参数传递过去
+                            params: {...this.props}
+                        })
+                    }}
+                >标签排序</Text>
             </View>
         );
     }

@@ -8,7 +8,7 @@ import {
 /**
  * 趋势界面
  */
-export default class TrendPages extends Component {
+export default class TrendPage extends Component {
 
     render() {
         return (
