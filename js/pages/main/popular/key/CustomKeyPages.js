@@ -21,6 +21,7 @@ export default class CustomKeyPage extends Component {
 
     constructor(props) {
         super(props);
+        this.isRemoveKey = this.props.isRemoveKey;
         this.changeValues = [];
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
         this.state = {
@@ -90,6 +91,7 @@ export default class CustomKeyPage extends Component {
 
     renderCheckBox(data) {
         let leftText = data.name;
+        let checked = this.isRemoveKey ? false : data.checked;
         return (
             <CheckBox
                 style={{flex: 1, padding: 10}}
@@ -105,13 +107,15 @@ export default class CustomKeyPage extends Component {
                         style={styles.checkBox}
                         source={require('../../../../../res/images/ic_check_box_outline_blank.png')}/>
                 }
-                isChecked={data.checked}
+                isChecked={checked}
                 isIndeterminate={false}/>
         );
     }
 
     onCheckClick(data) {
-        data.checked = !data.checked;
+        if (!this.isRemoveKey) {
+            data.checked = !data.checked;
+        }
         ArrayUtil.updateItem(this.changeValues, data);
     }
 
@@ -119,16 +123,18 @@ export default class CustomKeyPage extends Component {
      * 创建导航栏
      */
     renderNavigationBar() {
+        let title = this.isRemoveKey ? '移除标签' : '自定义标签';
+        let right = this.isRemoveKey ? '移除' : '保存';
         let rightButton = <TouchableOpacity
             onPress={() => this.onSave()}
         >
             <View style={{margin: 10}}>
-                <Text style={styles.title}>保存</Text>
+                <Text style={styles.title}>{right}</Text>
             </View>
         </TouchableOpacity>
         return (
             <NavigationBar
-                title={'自定义标签'}
+                title={title}
                 leftButton={ViewUtil.getLeftButton(() => this.onBack())}
                 rightButton={rightButton}
             />
@@ -148,7 +154,7 @@ export default class CustomKeyPage extends Component {
                 {text: '保存', onPress: () => this.onSave()},
             ],
             // 点击提示框的外面不取消提示框
-            { cancelable: false }
+            {cancelable: false}
         )
     }
 
@@ -156,6 +162,12 @@ export default class CustomKeyPage extends Component {
         if (this.changeValues.length === 0) {
             this.props.navigator.pop();
             return;
+        }
+        if (this.isRemoveKey) {
+            // 移除标签
+            for (let i = 0; i < this.changeValues.length; i++) {
+                ArrayUtil.remove(this.state.dataArray, this.changeValues[i]);
+            }
         }
         this.languageDao.save(this.state.dataArray);
         this.props.navigator.pop();

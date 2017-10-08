@@ -56,4 +56,20 @@ export default class ArrayUtil {
         }
         return true;
     }
+
+    /**
+     * 移除数组中指定的元素
+     * @param arr
+     * @param item
+     */
+    static remove(arr, item) {
+        if (!arr) {
+            return;
+        }
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === item) {
+                arr.splice(i, 1);
+            }
+        }
+    }
 }

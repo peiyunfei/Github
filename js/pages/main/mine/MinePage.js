@@ -37,6 +37,19 @@ export default class MinePage extends Component {
                         })
                     }}
                 >标签排序</Text>
+                <Text
+                    style={{fontSize: 18}}
+                    onPress={() => {
+                        this.props.navigator.push({
+                            component: CustomKeyPages,
+                            // 将页面的参数传递过去
+                            params: {
+                                ...this.props,
+                                isRemoveKey: true
+                            }
+                        })
+                    }}
+                >移除标签</Text>
             </View>
         );
     }
