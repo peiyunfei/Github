@@ -23,7 +23,7 @@ const StatusBarShape = {
     // 状态栏文本的颜色
     barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
     // 是否隐藏状态栏
-    hidden: PropTypes.bool,
+    hidden: PropTypes.boolean,
 }
 
 /**
@@ -46,13 +46,12 @@ export default class NavigationBar extends Component {
         // 是否隐藏导航栏
         hide: PropTypes.boolean,
         // 状态栏
-        statusBar: PropTypes.shape(StatusBarShape),
+        statusBar: PropTypes.shape(StatusBarShape)
     }
 
     // 设置默认属性
     static defaultProps = {
         statusBar: {
-            barStyle: 'light-content',
             hidden: false,
             backgroundColor: '#2196f3',
         }
@@ -84,12 +83,12 @@ export default class NavigationBar extends Component {
     renderNavigationBar() {
         // 状态栏
         let statusBar = <View
-            // this.props.statusBar取出用户设置的状态栏样式
-            style={[styles.statusBar, this.props.statusBar]}>
+            style={styles.statusBar}>
+            {/*this.props.statusBar取出用户设置的状态栏样式*/}
             <StatusBar {...this.props.statusBar}/>
         </View>
         let titleView = this.props.titleView ? this.props.titleView :
-            <Text style={{color:'white'}}>{this.props.title}</Text>
+            <Text style={{color: 'white', fontSize: 18}}>{this.props.title}</Text>
         let content = <View
             style={styles.navBar}
         >

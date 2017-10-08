@@ -9,6 +9,7 @@ import NavigationBar from "../../../view/NavigationBar";
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import DataRepository from "../../../expand/dao/DataRepository";
 import RepositoryCell from '../RepositoryCell'
+import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -18,27 +19,67 @@ const QUERY_STR = '&sort=stars';
  */
 export default class PopularPages extends Component {
 
+    constructor(props) {
+        super(props);
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.state = {
+            language: []
+        }
+    }
+
+    componentDidMount() {
+        this.loadData();
+    }
+
+    /**
+     * 加载数据
+     */
+    loadData() {
+        this.languageDao.fetch()
+            .then(result => {
+                this.setState({
+                    language: result
+                })
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
     render() {
+        let content = this.renderScrollableTabView();
         return (
             <View style={styles.container}>
                 {this.renderNavigationBar()}
-                <ScrollableTabView
-                    tabBarBackgroundColor='#2196f3'
-                    // 为选中的颜色
-                    tabBarInactiveTextColor='mintcream'
-                    // 选中的颜色
-                    tabBarActiveTextColor='white'
-                    // 指示器的样式
-                    tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
-                    renderTabBar={() => <ScrollableTabBar/>}
-                >
-                    <PopularTab tabLabel='Java'>Java</PopularTab>
-                    <PopularTab tabLabel='IOS'>IOS</PopularTab>
-                    <PopularTab tabLabel='Android'>Android</PopularTab>
-                    <PopularTab tabLabel='JavaScript'>JavaScript</PopularTab>
-                </ScrollableTabView>
+                {content}
             </View>
         );
+    }
+
+    /**
+     * 创建ScrollableTabView
+     * @returns {*}
+     */
+    renderScrollableTabView() {
+        // 如果还没有读取到用户设置的页签，则不加载ScrollableTabView
+        let content = this.state.language.length > 0 ? <ScrollableTabView
+            // 页签的颜色
+            tabBarBackgroundColor='#2196f3'
+            // 为选中的颜色
+            tabBarInactiveTextColor='mintcream'
+            // 选中的颜色
+            tabBarActiveTextColor='white'
+            // 指示器的样式
+            tabBarUnderlineStyle={{backgroundColor: '#e7e7e7', height: 2}}
+            renderTabBar={() => <ScrollableTabBar/>}
+        >
+            {this.state.language.map((result, i, arr) => {
+                let lan = arr[i];
+                return lan.checked ?
+                    <PopularTab key={i} tabLabel={lan.name}>{lan.name}</PopularTab> : null;
+            })}
+        </ScrollableTabView> : null;
+        return content;
     }
 
     /**
