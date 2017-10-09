@@ -10,6 +10,7 @@ import NavigationBar from "../../../view/NavigationBar";
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import DataRepository from "../../../expand/dao/DataRepository";
 import RepositoryCell from '../RepositoryCell'
+import PopularDetail from './detail/PopularDetail'
 import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
 const URL = 'https://api.github.com/search/repositories?q=';
@@ -78,7 +79,12 @@ export default class PopularPage extends Component {
             {this.state.language.map((result, i, arr) => {
                 let lan = arr[i];
                 return lan.checked ?
-                    <PopularTab key={i} tabLabel={lan.name}>{lan.name}</PopularTab> : null;
+                    <PopularTab 
+                        key={i} 
+                        tabLabel={lan.name}
+                        {...this.props}
+                    >
+                        {lan.name}</PopularTab> : null;
             })}
         </ScrollableTabView> : null;
         return content;
@@ -181,9 +187,22 @@ class PopularTab extends Component {
         this.onLoad();
     }
 
+    onSelect(data) {
+        this.props.navigator.push({
+            component: PopularDetail,
+            params: {
+                data: data,
+                ...this.props
+            }
+        });
+    }
+
     renderRow(data) {
         return (
-            <RepositoryCell data={data}/>
+            <RepositoryCell
+                // 传递属性和数据
+                onSelect={() => this.onSelect(data)}
+                data={data}/>
         );
     }
 }

@@ -11,6 +11,7 @@ import PopularPage from './popular/PopularPage'
 import MinePage from './mine/MinePage'
 import FavoritePage from './favorite/FavoritePage'
 import TrendPage from './trend/TrendPage'
+import WebViewTest from '../../../WebViewTest'
 
 /**
  * 主界面
@@ -49,7 +50,7 @@ export default class Main extends Component {
 
                     {/*收藏*/}
                     {this.renderTabBarItem('收藏', require('../../../res/images/ic_favorite.png'),
-                        'favorite', FavoritePage)}
+                        'favorite', WebViewTest)}
 
                     {/*我的*/}
                     {this.renderTabBarItem('我的', require('../../../res/images/ic_my.png'),

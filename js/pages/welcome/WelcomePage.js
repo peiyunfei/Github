@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-    StyleSheet,
     Text,
     View
 } from 'react-native';
@@ -10,7 +9,7 @@ import Main from '../main/Main'
 /**
  * 欢迎界面，两秒后进入主界面
  */
-export default class WelcomePage extends Component<{}> {
+export default class WelcomePage extends Component {
 
     /**
      * 界面加载完成
