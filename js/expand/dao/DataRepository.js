@@ -2,8 +2,23 @@ import React from 'react';
 import {
     AsyncStorage,
 } from 'react-native';
+import GitHubTrending from 'GitHubTrending'
 
+export let FLAG_STORAGE = {
+    flag_popular: 'popular',
+    flag_trending: 'trending'
+}
+/**
+ * 封装网络请求框架
+ */
 export default class DataRepository {
+
+    constructor(flag) {
+        this.flag = flag;
+        if (this.flag === FLAG_STORAGE.flag_trending) {
+            this.trending = new GitHubTrending();
+        }
+    }
 
     fetchRepository(url) {
         return new Promise((resolve, reject) => {
@@ -45,20 +60,34 @@ export default class DataRepository {
      */
     fetchNetRepository(url) {
         return new Promise((resolve, reject) => {
-            fetch(url)
-                .then(response => response.json())
-                .then(result => {
-                    if (!result) {
-                        reject(new Error('网络数据为空'));
-                    }else {
-                        resolve(result.items);
-                        // 将网络数据保存到本地
-                        this.saveRepository(url, result.items);
-                    }
-                })
-                .catch(error => {
-                    reject(error);
-                })
+            if (this.flag === FLAG_STORAGE.flag_trending) {
+                this.trending.fetchTrending(url)
+                    .then(result => {
+                        if (!result) {
+                            reject(new Error('网络数据为空'));
+                        }
+                        else {
+                            resolve(result);
+                            // 将网络数据保存到本地
+                            this.saveRepository(url, result);
+                        }
+                    })
+            } else {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result) {
+                            reject(new Error('网络数据为空'));
+                        } else {
+                            resolve(result.items);
+                            // 将网络数据保存到本地
+                            this.saveRepository(url, result.items);
+                        }
+                    })
+                    .catch(error => {
+                        reject(error);
+                    })
+            }
         })
     }
 
@@ -92,7 +121,7 @@ export default class DataRepository {
             return;
         }
         let data = {items: items, update_date: new Date().getTime()};
-        AsyncStorage.setItem(url, JSON.stringify(data), (error)=>{
+        AsyncStorage.setItem(url, JSON.stringify(data), (error) => {
 
         });
     }

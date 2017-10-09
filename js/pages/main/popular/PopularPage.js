@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import NavigationBar from "../../../view/NavigationBar";
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
-import DataRepository from "../../../expand/dao/DataRepository";
-import RepositoryCell from '../RepositoryCell'
-import PopularDetail from './detail/PopularDetail'
+import DataRepository, {FLAG_STORAGE} from "../../../expand/dao/DataRepository";
+import PopularCell from './PopularCell'
+import PopularAndTrendDetail from '../PopularAndTrendDetail'
 import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
 const URL = 'https://api.github.com/search/repositories?q=';
@@ -79,8 +79,8 @@ export default class PopularPage extends Component {
             {this.state.language.map((result, i, arr) => {
                 let lan = arr[i];
                 return lan.checked ?
-                    <PopularTab 
-                        key={i} 
+                    <PopularTab
+                        key={i}
                         tabLabel={lan.name}
                         {...this.props}
                     >
@@ -104,7 +104,7 @@ export default class PopularPage extends Component {
 class PopularTab extends Component {
     constructor(props) {
         super(props);
-        this.dataRepository = new DataRepository()
+        this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
         this.state = {
             result: '',
             isLoading: false,
@@ -189,7 +189,7 @@ class PopularTab extends Component {
 
     onSelect(data) {
         this.props.navigator.push({
-            component: PopularDetail,
+            component: PopularAndTrendDetail,
             params: {
                 data: data,
                 ...this.props
@@ -199,7 +199,7 @@ class PopularTab extends Component {
 
     renderRow(data) {
         return (
-            <RepositoryCell
+            <PopularCell
                 // 传递属性和数据
                 onSelect={() => this.onSelect(data)}
                 data={data}/>

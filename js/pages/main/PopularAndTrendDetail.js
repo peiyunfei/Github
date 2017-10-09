@@ -4,18 +4,20 @@ import {
     WebView,
     View
 } from 'react-native';
-import NavigationBar from '../../../../view/NavigationBar'
-import ViewUtil from '../../../../utils/ViewUtil'
+import NavigationBar from '../../view/NavigationBar'
+import ViewUtil from '../../utils/ViewUtil'
 
+const TREND_URL = 'https://github.com/';
 /**
- * 最热模块的详情界面
+ * 最热和趋势模块的详情界面
  */
-export default class PopularDetail extends Component {
+export default class PopularAndTrendDetail extends Component {
 
     constructor(props) {
         super(props);
-        this.url = this.props.data.html_url;
-        let title = this.props.data.full_name;
+        this.url = this.props.data.html_url ? this.props.data.html_url :
+            TREND_URL + this.props.data.full_name;
+        let title = this.props.data.full_name?this.props.data.full_name:this.props.data.fullName;
         title = title.length > 25 ?
             "..." + title.substr(title.length - 25, title.length) : title;
         this.title = title;

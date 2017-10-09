@@ -7,7 +7,7 @@ import {
     View
 } from 'react-native';
 
-export default class RepositoryCell extends Component {
+export default class PopularCell extends Component {
 
     render() {
         return (
@@ -31,7 +31,7 @@ export default class RepositoryCell extends Component {
                         </View>
                         <Image
                             style={styles.imgFavorite}
-                            source={require('../../../res/images/ic_star.png')}
+                            source={require('../../../../res/images/ic_star.png')}
                         />
                     </View>
 
