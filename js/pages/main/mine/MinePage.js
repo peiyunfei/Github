@@ -7,6 +7,7 @@ import {
 import NavigationBar from "../../../view/NavigationBar"
 import CustomKeyPages from '../popular/key/CustomKeyPages'
 import SortKeyPage from '../popular/key/SortKeyPage'
+import {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
 /**
  * 我的界面
@@ -23,7 +24,10 @@ export default class MinePage extends Component {
                         this.props.navigator.push({
                             component: CustomKeyPages,
                             // 将页面的参数传递过去
-                            params: {...this.props}
+                            params: {
+                                ...this.props,
+                                flag: FLAG_LANGUAGE.flag_key
+                            }
                         })
                     }}
                 >自定义标签</Text>
@@ -31,12 +35,41 @@ export default class MinePage extends Component {
                     style={{fontSize: 18}}
                     onPress={() => {
                         this.props.navigator.push({
+                            component: CustomKeyPages,
+                            // 将页面的参数传递过去
+                            params: {
+                                ...this.props,
+                                flag: FLAG_LANGUAGE.flag_language
+                            }
+                        })
+                    }}
+                >自定义语言</Text>
+                <Text
+                    style={{fontSize: 18}}
+                    onPress={() => {
+                        this.props.navigator.push({
                             component: SortKeyPage,
                             // 将页面的参数传递过去
-                            params: {...this.props}
+                            params: {
+                                ...this.props,
+                                flag: FLAG_LANGUAGE.flag_key
+                            }
                         })
                     }}
                 >标签排序</Text>
+                <Text
+                    style={{fontSize: 18}}
+                    onPress={() => {
+                        this.props.navigator.push({
+                            component: SortKeyPage,
+                            // 将页面的参数传递过去
+                            params: {
+                                ...this.props,
+                                flag: FLAG_LANGUAGE.flag_language
+                            }
+                        })
+                    }}
+                >语言排序</Text>
                 <Text
                     style={{fontSize: 18}}
                     onPress={() => {

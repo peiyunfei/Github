@@ -23,7 +23,7 @@ export default class CustomKeyPage extends Component {
         super(props);
         this.isRemoveKey = this.props.isRemoveKey;
         this.changeValues = [];
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.languageDao = new LanguageDao(this.props.flag);
         this.state = {
             dataArray: []
         }
@@ -124,6 +124,7 @@ export default class CustomKeyPage extends Component {
      */
     renderNavigationBar() {
         let title = this.isRemoveKey ? '移除标签' : '自定义标签';
+        title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title;
         let right = this.isRemoveKey ? '移除' : '保存';
         let rightButton = <TouchableOpacity
             onPress={() => this.onSave()}
