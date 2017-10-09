@@ -21,7 +21,7 @@ export default class SortKeyPage extends Component {
 
     constructor(props) {
         super(props);
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.languageDao = new LanguageDao(this.props.flag);
         // 数据库中存储的标签
         this.dataArray = [];
         // 排序之后存入数据库的标签
@@ -136,6 +136,7 @@ export default class SortKeyPage extends Component {
      * 创建导航栏
      */
     renderNavigationBar() {
+        let title = this.props.flag === FLAG_LANGUAGE.flag_language ? '语言排序' : '标签排序';
         let rightButton = <TouchableOpacity
             onPress={() => this.onSave()}
         >
@@ -145,7 +146,7 @@ export default class SortKeyPage extends Component {
         </TouchableOpacity>
         return (
             <NavigationBar
-                title={'标签排序'}
+                title={title}
                 leftButton={ViewUtil.getLeftButton(() => this.onBack())}
                 rightButton={rightButton}
             />
