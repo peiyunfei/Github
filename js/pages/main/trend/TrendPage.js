@@ -3,6 +3,9 @@ import {
     StyleSheet,
     ListView,
     RefreshControl,
+    TouchableOpacity,
+    Image,
+    Text,
     DeviceEventEmitter,
     View
 } from 'react-native';
@@ -10,11 +13,17 @@ import NavigationBar from "../../../view/NavigationBar";
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view'
 import DataRepository, {FLAG_STORAGE} from "../../../expand/dao/DataRepository";
 import TrendCell from './TrendCell'
+import TimeSpan from '../../../model/TimeSpan'
+import Popover from '../../../view/Popover'
 import PopularAndTrendDetail from '../PopularAndTrendDetail'
 import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
 const URL = 'https://github.com/trending/';
-
+let timeSpanArray = [
+    new TimeSpan('今 天', 'since=daily'),
+    new TimeSpan('本 周', 'since=weekly'),
+    new TimeSpan('本 月', 'since=monthly'),
+];
 /**
  * 最热界面
  */
@@ -24,7 +33,10 @@ export default class TrendPage extends Component {
         super(props);
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
         this.state = {
-            language: []
+            language: [],
+            isVisible: false,
+            buttonRect: {},
+            timeSpan: timeSpanArray[0],
         }
     }
 
@@ -50,12 +62,67 @@ export default class TrendPage extends Component {
 
     render() {
         let content = this.renderScrollableTabView();
+        let popover = this.renderPopover();
         return (
             <View style={styles.container}>
                 {this.renderNavigationBar()}
                 {content}
+                {popover}
             </View>
         );
+    }
+
+    /**
+     * 创建弹窗
+     * @returns {XML}
+     */
+    renderPopover() {
+        return <Popover
+            // 在下面显示弹窗
+            placement='bottom'
+            isVisible={this.state.isVisible}
+            fromRect={this.state.buttonRect}
+            contentStyle={{backgroundColor: '#343434', opacity: 0.8}}
+            onClose={() => {
+                this.closePopover()
+            }}>
+            {timeSpanArray.map((result, i, arr) => {
+                return <TouchableOpacity
+                    key={i}
+                    underlayColor='transparent'
+                    onPress={() => this.onSelectTimeSpan(arr[i])}
+                >
+                    <Text style={{color: 'white', fontSize: 18, padding: 8}}
+                    >{arr[i].showText}</Text>
+                </TouchableOpacity>
+            })}
+        </Popover>
+    }
+
+    onSelectTimeSpan(timeSpan) {
+        this.setState({
+            timeSpan: timeSpan,
+            isVisible: false
+        })
+    }
+
+    /**
+     * 打开弹窗
+     */
+    showPopover() {
+        this.refs.button.measure((ox, oy, width, height, px, py) => {
+            this.setState({
+                isVisible: true,
+                buttonRect: {x: px, y: py, width: width, height: height}
+            });
+        });
+    }
+
+    /**
+     * 关闭弹窗
+     */
+    closePopover() {
+        this.setState({isVisible: false});
     }
 
     /**
@@ -81,6 +148,7 @@ export default class TrendPage extends Component {
                     <TrendTab
                         key={i}
                         tabLabel={lan.name}
+                        timeSpan={this.state.timeSpan}
                         {...this.props}
                     >
                         {lan.name}</TrendTab> : null;
@@ -95,8 +163,32 @@ export default class TrendPage extends Component {
      */
     renderNavigationBar() {
         return <NavigationBar
-            title={'趋势'}
+            titleView={this.renderTitleView()}
         />;
+    }
+
+    renderTitleView() {
+        return (
+            <TouchableOpacity
+                underlayColor='transparent'
+                ref='button'
+                onPress={() => {
+                    this.showPopover()
+                }}
+            >
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{
+                        color: 'white',
+                        fontSize: 18,
+                        marginRight: 5
+                    }}>趋势 {this.state.timeSpan.showText}</Text>
+                    <Image
+                        style={{width: 12, height: 12,}}
+                        source={require('../../../../res/images/ic_spinner_triangle.png')}
+                    />
+                </View>
+            </TouchableOpacity>
+        );
     }
 }
 
@@ -114,15 +206,25 @@ class TrendTab extends Component {
         }
     }
 
-    componentDidMount() {
-        this.onLoad();
+    /**
+     * 当收到新的属性时回调
+     * @param nextProps 新的属性
+     */
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.timeSpan !== this.props.timeSpan) {
+            this.onLoad(nextProps.timeSpan);
+        }
     }
 
-    onLoad() {
+    componentDidMount() {
+        this.onLoad(this.props.timeSpan, true);
+    }
+
+    onLoad(timeSpan, isRefresh) {
         this.setState({
             isLoading: true
-        })
-        let url = this.getUrl(this.props.tabLabel, '?since=daily');
+        });
+        let url = this.getUrl(this.props.tabLabel, timeSpan);
         this.dataRepository.fetchRepository(url)
             .then(result => {
                 let items = result && result.items ? result.items : result ? result : [];
@@ -151,7 +253,7 @@ class TrendTab extends Component {
     }
 
     getUrl(catalog, timeSpan) {
-        return URL + catalog + timeSpan;
+        return URL + catalog + '?' + timeSpan.searchText;
     }
 
     render() {
@@ -183,7 +285,7 @@ class TrendTab extends Component {
     }
 
     loadDataFromNet() {
-        this.onLoad();
+        this.onLoad(this.props.timeSpan);
     }
 
     onSelect(data) {
