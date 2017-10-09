@@ -2,8 +2,11 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Image,
+    DeviceEventEmitter,
+    View
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator'
+import Toast, {DURATION} from 'react-native-easy-toast'
 import PopularPage from './popular/PopularPage'
 import MinePage from './mine/MinePage'
 import FavoritePage from './favorite/FavoritePage'
@@ -18,29 +21,42 @@ export default class Main extends Component {
         super(props);
         this.state = {
             selectedTab: 'popular',
-            theme:this.props.theme,
+            theme: this.props.theme,
         }
+    }
+
+    componentDidMount() {
+        this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+            this.toast.show(text, DURATION.LENGTH_SHORT);
+        });
+    }
+
+    componentWillUnmount() {
+        this.listener && this.listener.remove();
     }
 
     render() {
         return (
-            <TabNavigator>
-                {/*最热*/}
-                {this.renderTabBarItem('最热', require('../../../res/images/ic_polular.png'),
-                    'popular', PopularPage)}
+            <View style={styles.container}>
+                <TabNavigator>
+                    {/*最热*/}
+                    {this.renderTabBarItem('最热', require('../../../res/images/ic_polular.png'),
+                        'popular', PopularPage)}
 
-                {/*趋势*/}
-                {this.renderTabBarItem('趋势', require('../../../res/images/ic_trending.png'),
-                    'trend', TrendPage)}
+                    {/*趋势*/}
+                    {this.renderTabBarItem('趋势', require('../../../res/images/ic_trending.png'),
+                        'trend', TrendPage)}
 
-                {/*收藏*/}
-                {this.renderTabBarItem('收藏', require('../../../res/images/ic_favorite.png'),
-                    'favorite', FavoritePage)}
+                    {/*收藏*/}
+                    {this.renderTabBarItem('收藏', require('../../../res/images/ic_favorite.png'),
+                        'favorite', FavoritePage)}
 
-                {/*我的*/}
-                {this.renderTabBarItem('我的', require('../../../res/images/ic_my.png'),
-                    'mine', MinePage)}
-            </TabNavigator>
+                    {/*我的*/}
+                    {this.renderTabBarItem('我的', require('../../../res/images/ic_my.png'),
+                        'mine', MinePage)}
+                </TabNavigator>
+                <Toast ref={toast => this.toast = toast}/>
+            </View>
         );
     }
 
@@ -68,8 +84,6 @@ export default class Main extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     iconStyle: {
         width: 25,
