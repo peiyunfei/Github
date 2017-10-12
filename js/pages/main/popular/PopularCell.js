@@ -9,30 +9,63 @@ import {
 
 export default class PopularCell extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            isFavorite: this.props.projectModel.isFavorite,
+            favoriteIcon: this.props.projectModel.isFavorite ?
+                require('../../../../res/images/ic_star.png') :
+                require('../../../../res/images/ic_unstar_transparent.png')
+        }
+    }
+
+    setFavoriteState(isFavorite) {
+        this.setState({
+            isFavorite: isFavorite,
+            favoriteIcon: isFavorite ? require('../../../../res/images/ic_star.png') :
+                require('../../../../res/images/ic_unstar_transparent.png')
+        })
+    }
+
+    onPressFavorite() {
+        this.setFavoriteState(!this.state.isFavorite);
+        this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite);
+    }
+
+    // componentWillReceiveProps(nextProps) {
+    //     this.setFavoriteState(nextProps.projectModel.isFavorite);
+    // }
+
     render() {
+        let items = this.props.projectModel.item;
+        let favoriteIcon = <TouchableOpacity
+            onPress={() => this.onPressFavorite()}
+        >
+            <Image
+                style={styles.imgFavorite}
+                source={this.state.favoriteIcon}
+            />
+        </TouchableOpacity>
         return (
             <TouchableOpacity
                 onPress={this.props.onSelect}
             >
                 <View style={styles.container}>
-                    <Text style={styles.fullName}>{this.props.data.full_name}</Text>
-                    <Text style={styles.description}>{this.props.data.description}</Text>
+                    <Text style={styles.fullName}>{items.full_name}</Text>
+                    <Text style={styles.description}>{items.description}</Text>
                     <View style={styles.bottomStyle}>
                         <View style={styles.textImg}>
                             <Text>Author:</Text>
                             <Image
-                                style={styles.imgFavorite}
-                                source={{uri: this.props.data.owner.avatar_url}}
+                                style={styles.avatar}
+                                source={{uri: items.owner.avatar_url}}
                             />
                         </View>
                         <View style={styles.textImg}>
                             <Text style={{marginRight: 5}}>Stars:</Text>
-                            <Text>{this.props.data.stargazers_count}</Text>
+                            <Text>{items.stargazers_count}</Text>
                         </View>
-                        <Image
-                            style={styles.imgFavorite}
-                            source={require('../../../../res/images/ic_star.png')}
-                        />
+                        {favoriteIcon}
                     </View>
 
                 </View>
@@ -74,9 +107,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    avatar: {
+        marginLeft: 5,
+        width: 22,
+        height: 22,
+    },
     imgFavorite: {
         marginLeft: 5,
         width: 22,
         height: 22,
+        tintColor: '#2196f3'
     },
 });

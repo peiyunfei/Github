@@ -37,7 +37,6 @@ export default class DataRepository {
                             .catch(e => {
                                 reject(e);
                             })
-
                     }
                 })
                 .catch(e => {

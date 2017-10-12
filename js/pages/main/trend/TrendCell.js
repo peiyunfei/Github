@@ -35,7 +35,7 @@ export default class TrendCell extends Component {
                             {data.contributors.map((result, i, arr) => {
                                 return <Image
                                     key={i}
-                                    style={styles.imgFavorite}
+                                    style={styles.avatar}
                                     source={{uri: arr[i]}}
                                 />
                             })}
@@ -86,9 +86,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    avatar: {
+        marginLeft: 5,
+        width: 22,
+        height: 22,
+    },
     imgFavorite: {
         marginLeft: 5,
         width: 22,
         height: 22,
+        tintColor: '#2196f3'
     },
 });

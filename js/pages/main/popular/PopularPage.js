@@ -12,10 +12,13 @@ import DataRepository, {FLAG_STORAGE} from "../../../expand/dao/DataRepository";
 import PopularCell from './PopularCell'
 import PopularAndTrendDetail from '../PopularAndTrendDetail'
 import LanguageDao, {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
+import FavoriteDao from '../../../expand/dao/FavoriteDao'
+import ProjectModel from '../../../model/ProjectModel'
+import Util from '../../../utils/Util'
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
-
+let favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 /**
  * 最热界面
  */
@@ -108,6 +111,7 @@ class PopularTab extends Component {
         this.state = {
             result: '',
             isLoading: false,
+            favoriteKeys: [],
             dataSource: new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 !== r2
                 }
@@ -119,18 +123,37 @@ class PopularTab extends Component {
         this.onLoad();
     }
 
+    flushFavoriteState() {
+        let projectModels = [];
+        let items = this.items;
+        for (let i = 0; i < items.length; i++) {
+            projectModels.push(new ProjectModel(items[i],
+                Util.checkItem(items[i], this.state.favoriteKeys)));
+        }
+        this.updateState({
+            isLoading: false,
+            dataSource: this.state.dataSource.cloneWithRows(projectModels)
+        });
+    }
+
+    updateState(dir) {
+        if (!this) return;
+        this.setState(dir);
+    }
+
     onLoad() {
         this.setState({
             isLoading: true
-        })
+        });
         let url = this.getUrl(this.props.tabLabel);
         this.dataRepository.fetchRepository(url)
             .then(result => {
-                let items = result && result.items ? result.items : result ? result : [];
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items),
-                    isLoading: false
-                });
+                this.items = result && result.items ? result.items : result ? result : [];
+                // this.setState({
+                //     dataSource: this.state.dataSource.cloneWithRows(items),
+                //     isLoading: false
+                // });
+                this.getFavoriteKeys();
                 if (result && result.update_date && !this.dataRepository.checkDate(result.update_date)) {
                     // DeviceEventEmitter.emit('showToast', '缓存数据过期');
                     // 缓存数据过期，从网络获取数据
@@ -139,15 +162,29 @@ class PopularTab extends Component {
             })
             .then(items => {
                 // DeviceEventEmitter.emit('showToast', '显示网络数据');
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items),
-                });
-
+                // this.setState({
+                //     dataSource: this.state.dataSource.cloneWithRows(items),
+                // });
+                this.items = items;
+                this.getFavoriteKeys();
             })
             .catch(error => {
                 this.setState({
                     result: JSON.stringify(error)
                 })
+            })
+    }
+
+    getFavoriteKeys() {
+        favoriteDao.getFavoriteKeys()
+            .then((keys) => {
+                if (keys) {
+                    this.updateState({favoriteKeys: keys});
+                }
+                this.flushFavoriteState();
+            })
+            .catch((e) => {
+                this.flushFavoriteState();
             })
     }
 
@@ -187,22 +224,32 @@ class PopularTab extends Component {
         this.onLoad();
     }
 
-    onSelect(data) {
+    onSelect(projectModel) {
         this.props.navigator.push({
             component: PopularAndTrendDetail,
             params: {
-                data: data,
+                projectModel: projectModel,
                 ...this.props
             }
         });
     }
 
-    renderRow(data) {
+    onFavorite(item, isFavorite) {
+        if (isFavorite) {
+            favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
+        } else {
+            favoriteDao.removeFavoriteItem(item.id.toString());
+        }
+    }
+
+    renderRow(projectModel) {
         return (
             <PopularCell
                 // 传递属性和数据
-                onSelect={() => this.onSelect(data)}
-                data={data}/>
+                onSelect={() => this.onSelect(projectModel)}
+                projectModel={projectModel}
+                onFavorite={(item, isFavorite) => this.onFavorite(item, isFavorite)}
+            />
         );
     }
 }

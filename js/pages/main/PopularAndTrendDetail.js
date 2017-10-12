@@ -15,9 +15,11 @@ export default class PopularAndTrendDetail extends Component {
 
     constructor(props) {
         super(props);
-        this.url = this.props.data.html_url ? this.props.data.html_url :
-            TREND_URL + this.props.data.full_name;
-        let title = this.props.data.full_name?this.props.data.full_name:this.props.data.fullName;
+        this.url = this.props.projectModel.item.html_url ? this.props.projectModel.item.html_url :
+            TREND_URL + this.props.projectModel.item.full_name;
+        let title = this.props.projectModel.item.full_name ?
+            this.props.projectModel.item.full_name :
+            this.props.projectModel.item.fullName;
         title = title.length > 25 ?
             "..." + title.substr(title.length - 25, title.length) : title;
         this.title = title;
