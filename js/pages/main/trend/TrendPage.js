@@ -332,6 +332,7 @@ class TrendTab extends Component {
             component: PopularAndTrendDetail,
             params: {
                 projectModel: projectModel,
+                flag: FLAG_STORAGE.flag_trending,
                 ...this.props
             }
         });

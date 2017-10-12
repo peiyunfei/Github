@@ -32,9 +32,9 @@ export default class PopularCell extends Component {
         this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite);
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     this.setFavoriteState(nextProps.projectModel.isFavorite);
-    // }
+    componentWillReceiveProps(nextProps) {
+        this.setFavoriteState(nextProps.projectModel.isFavorite);
+    }
 
     render() {
         let items = this.props.projectModel.item;

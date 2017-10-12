@@ -12,7 +12,7 @@ export default class LanguageDao {
     }
 
     /**
-     * 不错收藏的项目
+     * 保存收藏的项目
      * @param key
      * @param value
      */

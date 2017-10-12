@@ -229,6 +229,7 @@ class PopularTab extends Component {
             component: PopularAndTrendDetail,
             params: {
                 projectModel: projectModel,
+                flag: FLAG_STORAGE.flag_popular,
                 ...this.props
             }
         });
