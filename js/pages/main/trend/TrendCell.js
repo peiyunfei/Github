@@ -10,15 +10,50 @@ import HTMLView from 'react-native-htmlview';
 
 export default class TrendCell extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            isFavorite: this.props.projectModel.isFavorite,
+            favoriteIcon: this.props.projectModel.isFavorite ?
+                require('../../../../res/images/ic_star.png') :
+                require('../../../../res/images/ic_unstar_transparent.png')
+        }
+    }
+
+    setFavoriteState(isFavorite) {
+        this.setState({
+            isFavorite: isFavorite,
+            favoriteIcon: isFavorite ? require('../../../../res/images/ic_star.png') :
+                require('../../../../res/images/ic_unstar_transparent.png')
+        })
+    }
+
+    onPressFavorite() {
+        this.setFavoriteState(!this.state.isFavorite);
+        this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setFavoriteState(nextProps.projectModel.isFavorite);
+    }
+
     render() {
-        let data = this.props.data;
-        let description = '<p>' + this.props.data.description + '</p>';
+        let item = this.props.projectModel.item;
+        let favoriteIcon = <TouchableOpacity
+            onPress={() => this.onPressFavorite()}
+        >
+            <Image
+                style={styles.imgFavorite}
+                source={this.state.favoriteIcon}
+            />
+        </TouchableOpacity>
+        let description = '<p>' + item.description + '</p>';
         return (
             <TouchableOpacity
                 onPress={this.props.onSelect}
             >
                 <View style={styles.container}>
-                    <Text style={styles.fullName}>{data.fullName}</Text>
+                    <Text style={styles.fullName}>{item.fullName}</Text>
                     <HTMLView
                         value={description}
                         onLinkPress={(url) => {
@@ -28,11 +63,11 @@ export default class TrendCell extends Component {
                             a: styles.description
                         }}
                     />
-                    <Text style={styles.description}>{data.meta}</Text>
+                    <Text style={styles.description}>{item.meta}</Text>
                     <View style={styles.bottomStyle}>
                         <View style={styles.textImg}>
                             <Text>Build by:</Text>
-                            {data.contributors.map((result, i, arr) => {
+                            {item.contributors.map((result, i, arr) => {
                                 return <Image
                                     key={i}
                                     style={styles.avatar}
@@ -40,10 +75,7 @@ export default class TrendCell extends Component {
                                 />
                             })}
                         </View>
-                        <Image
-                            style={styles.imgFavorite}
-                            source={require('../../../../res/images/ic_star.png')}
-                        />
+                        {favoriteIcon}
                     </View>
 
                 </View>

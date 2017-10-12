@@ -11,7 +11,8 @@ export default class Util {
     static checkItem(item, items) {
         let len = items.length;
         for (let i = 0; i < len; i++) {
-            if (item.id.toString() === items[i]) {
+            let id = item.id ? item.id.toString() : item.fullName;
+            if (id === items[i]) {
                 return true;
             }
         }
