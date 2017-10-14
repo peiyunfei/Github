@@ -203,7 +203,7 @@ class TrendTab extends Component {
         this.state = {
             result: '',
             isLoading: false,
-            favoriteKeys:[],
+            favoriteKeys: [],
             dataSource: new ListView.DataSource({
                     rowHasChanged: (r1, r2) => r1 !== r2
                 }
@@ -223,6 +223,22 @@ class TrendTab extends Component {
 
     componentDidMount() {
         this.onLoad(this.props.timeSpan, true);
+        this.listener = DeviceEventEmitter.addListener("favoriteChanged_trend", () => {
+            this.favoriteChanged_trend = true;
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.listener) {
+            this.listener.remove();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.favoriteChanged_trend) {
+            this.favoriteChanged_trend = false;
+            this.getFavoriteKeys();
+        }
     }
 
     flushFavoriteState() {

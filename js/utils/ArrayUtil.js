@@ -13,6 +13,7 @@ export default class ArrayUtil {
             let temp = array[i];
             if (temp === data) {
                 array.splice(i, 1);
+                return;
             }
         }
         array.push(data);

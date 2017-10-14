@@ -87,7 +87,7 @@ export default class PopularPage extends Component {
                         tabLabel={lan.name}
                         {...this.props}
                     >
-                        {lan.name}</PopularTab> : null;
+                    </PopularTab> : null;
             })}
         </ScrollableTabView> : null;
         return content;
@@ -121,6 +121,22 @@ class PopularTab extends Component {
 
     componentDidMount() {
         this.onLoad();
+        this.listener = DeviceEventEmitter.addListener("favoriteChanged_popular", () => {
+            this.favoriteChanged_popular = true;
+        })
+    }
+
+    componentWillUnmount() {
+        if (this.listener) {
+            this.listener.remove();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.favoriteChanged_popular) {
+            this.favoriteChanged_popular = false;
+            this.getFavoriteKeys();
+        }
     }
 
     flushFavoriteState() {
