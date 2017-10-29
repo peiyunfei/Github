@@ -9,8 +9,10 @@ import {
     DeviceEventEmitter,
 } from 'react-native';
 import NavigationBar from "../../../view/NavigationBar"
+import ViewUtil from "../../../utils/ViewUtil"
 import CustomKeyPages from './key/CustomKeyPages'
 import SortKeyPage from './key/SortKeyPage'
+import AboutPage from './about/AboutPage'
 import {MORE_MENU} from '../../../utils/MoreMenu'
 import {FLAG_LANGUAGE} from '../../../expand/dao/LanguageDao'
 
@@ -93,6 +95,7 @@ export default class MinePage extends Component {
         let targetComponent, params = {...this.props, menuType: tag};
         switch (tag) {
             case MORE_MENU.About:// 关于
+                targetComponent = AboutPage;
                 break;
             case MORE_MENU.Custom_Language: // 自定义语言
                 targetComponent = CustomKeyPages;
